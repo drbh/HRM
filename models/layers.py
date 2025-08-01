@@ -4,11 +4,14 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
-try:
-    from flash_attn_interface import flash_attn_func  # type: ignore[import]
-except ImportError:
-    # Fallback to FlashAttention 2
-    from flash_attn import flash_attn_func  # type: ignore[import]
+from kernels import get_kernel
+flash_attn = get_kernel("kernels-community/flash-attn")
+flash_attn_func = flash_attn.flash_attn_func if hasattr(flash_attn, 'flash_attn_func') else flash_attn
+# try:
+#     from flash_attn_interface import flash_attn_func  # type: ignore[import]
+# except ImportError:
+#     # Fallback to FlashAttention 2
+#     from flash_attn import flash_attn_func  # type: ignore[import]
 
 from models.common import trunc_normal_init_
 
